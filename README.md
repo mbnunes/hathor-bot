@@ -46,4 +46,4 @@ and run the command:
 `node index.js`
 
 
-<img src="https://github.com/mbnunes/hathor-bot/blob/master/bot.png">
+<img src="https://github.com/mbnunes/hathor-bot/blob/main/imgs/bot.png">

@@ -44,3 +44,6 @@ Then just add your BOT KEY in the config.json file
 and run the command:
     
 `node index.js`
+
+
+![alt text](https://github.com/mbnunes/hathor-bot/blob/master/bot.png?raw=true)

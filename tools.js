@@ -1,5 +1,7 @@
 const request = require("axios");
+const { Extra} = require('telegraf');
 const Discord = require("discord.js");
+
 
 var hathorInfo = {
     date: "",
@@ -11,10 +13,12 @@ var hathorInfo = {
     circulatingSupplyTotal: 0.00,
     volume24h_usd: 0.00,
     volume24h_btc: 0.00,
-    exchanges: ["https://qtrade.io/","https://www.kucoin.com"]
+    exchanges: ["https://qtrade.io/market/HTR_BTC","https://trade.kucoin.com/HTR-USDT"]
 }
 
-async function getInfo(msg) {    
+const meses = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug","Sep","Oct","Nov","Dec"];
+
+async function getInfo(typeMessage, msg) {    
     return new Promise((resolve, reject) => {
         try {            
             request.get(`https://coinpaprika.com/coin/htr-hathor-network/`, {
@@ -22,8 +26,9 @@ async function getInfo(msg) {
             })
                 .then(function (response) {
 
-                    if (response.data) {                              
-                        hathorInfo["date"] = new Date().toLocaleString()
+                    if (response.data) {    
+                        let dateNow = new Date();
+                        hathorInfo["date"] = ((meses[(dateNow.getMonth())] + " " + dateNow.getDate() + ", " + dateNow.getFullYear() + " - " + dateNow.getHours()+ ":" +dateNow.getMinutes()+":"+dateNow.getSeconds()));
 
                         var matchesValue = response.data.match(/<span\s+id="coinPrice"\s+data-recalc="[\S\s]*?">[\S\s]*?<\/span>/gi);                        
                         hathorInfo["valueUSD"] = matchesValue[0].replace(/(<\/?[^>]+>)/gi, '').replace(/\s/g, '');
@@ -46,24 +51,35 @@ async function getInfo(msg) {
                         hathorInfo["volume24h_usd"] = o[2].replace(/\s\s+/g, ' ');
                         hathorInfo["volume24h_btc"] = o[3].replace(/\s\s+/g, ' ');
 
-
-                        const messageEmbedded = new Discord.MessageEmbed()
-                            .setColor('#0099ff')
+                        if (typeMessage == "Discord")
+                        {
+                            const messageEmbedded = new Discord.MessageEmbed()
+                            .setColor('#ffffff')
                             .setAuthor('Hathor Network','https://pbs.twimg.com/profile_images/1205138650478075904/jeN_tEQQ_400x400.jpg')
-                            .setTitle('Hathor Info - '+hathorInfo["date"])
+                            .setURL('https://coinpaprika.com/coin/htr-hathor-network')
+                            .setTitle(hathorInfo["date"])
                             .addFields(
                                 { name: "USD Value", value: hathorInfo["valueUSD"], inline: true},
                                 { name: "Rank", value: hathorInfo["rank"], inline: true},
                                 { name: '\u200B', value: '\u200B' },    
                                 { name: "Market Cap", value: hathorInfo["marketCap_usd"]+'\n'+hathorInfo["marketCap_btc"], inline: true},
-                                { name: "Circulating Supply", value: hathorInfo["circulatingSupply"]+'\n'+hathorInfo["circulatingSupplyTotal"], inline: true},
+                                { name: "Circulating Supply", value: hathorInfo["circulatingSupply"]+'\nTotal: '+hathorInfo["circulatingSupplyTotal"], inline: true},
                                 { name: "Volume (24h)", value: hathorInfo["volume24h_usd"]+'\n'+hathorInfo["volume24h_btc"], inline: true},
                                 { name: '\u200B', value: '\u200B' },    
                                 { name: "Exchanges", value: hathorInfo["exchanges"], inline: false},        
                             )
-                            .setFooter("Informações retiradas do CoinPaprika, https://coinpaprika.com/")                
+                            .setFooter(`See more details on [teste]<https://coinpaprika.com/coin/htr-hathor-network>`)                
                                                                                           
-                        msg.channel.send(messageEmbedded);
+                            msg.channel.send(messageEmbedded);
+
+                        }else if(typeMessage == "Telegram")
+                        {                            
+                            var msgHead = `<b>Hathor Network Bot</b> - `+hathorInfo["date"]+`\n<b>USD Value:</b> `+hathorInfo["valueUSD"]+`\n<b>Rank:</b> `+hathorInfo["rank"]+`\n\n`;
+                            var msgBody = `<b>------Market Cap------</b>\n`+hathorInfo["marketCap_usd"]+`\n`+hathorInfo["marketCap_btc"]+`\n<b>------Circulating Supply------</b>\n`+hathorInfo["circulatingSupply"]+`\n<b>Total:</b> `+hathorInfo["circulatingSupplyTotal"]+`\n<b>------Volume(24h)------</b>\n`+hathorInfo["volume24h_usd"]+`\n`+hathorInfo["volume24h_btc"]+`\n\n`;
+                            var msgFooter = `<b>Exchanges</b>\n`+hathorInfo["exchanges"][0]+`\n`+hathorInfo["exchanges"][1]+`\n\n<b>See more details on</b> <a href="https://coinpaprika.com/coin/htr-hathor-network">here</a>`;                    
+
+                            msg.reply(msgHead+msgBody+msgFooter, {parse_mode: "HTML", disable_web_page_preview: true});
+                        }
 
                         resolve();                        
                     } else {

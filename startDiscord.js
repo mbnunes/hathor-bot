@@ -4,7 +4,7 @@ const tools = require("./tools.js");
 const client = new Discord.Client();
 const prefix = ".";
 
-client.login(config.BOT_TOKEN);
+client.login(config.BOT_DISCORD_TOKEN);
 
 client.on('message', async msg => {
     
@@ -16,9 +16,8 @@ client.on('message', async msg => {
     const command = args.shift().toLowerCase();          
     
     switch(command){
-        case "info":
-            msg.channel.send("I'll verify the info now! Waiting a little please!");
-            tools.getInfo(msg);
+        case "info":            
+            tools.getInfo("Discord", msg);
             break; 
     }   
 });

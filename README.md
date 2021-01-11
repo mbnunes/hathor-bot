@@ -43,7 +43,7 @@ Then just add your BOT KEY in the config.json file
 
 and run the command:
     
-`node index.js`
-
+`node startDiscord.js` -> to work on discord
+`node startTelegram.js` -> to work on telegram
 
 <img src="https://github.com/mbnunes/hathor-bot/blob/main/imgs/bot.png">

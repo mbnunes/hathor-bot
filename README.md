@@ -53,8 +53,10 @@ and run the command:
 `node startDiscord.js` -> to work on discord
 `node startTelegram.js` -> to work on telegram
 
-Discord:
+####Discord:
+
 <img src="https://github.com/mbnunes/hathor-bot/blob/main/imgs/bot.png">
 
-Telegram:
+####Telegram:
+
 <img src="https://github.com/mbnunes/hathor-bot/blob/main/imgs/botTelegram.png">

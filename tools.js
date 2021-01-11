@@ -68,7 +68,7 @@ async function getInfo(typeMessage, msg) {
                                 { name: '\u200B', value: '\u200B' },    
                                 { name: "Exchanges", value: hathorInfo["exchanges"], inline: false},        
                             )
-                            .setFooter(`See more details here`)                
+                            .setFooter("See more details https://coinpaprika.com/coin/htr-hathor-network/")                
                                                                                           
                             msg.channel.send(messageEmbedded);
 
